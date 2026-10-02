@@ -23,6 +23,9 @@ A web page built for elderly users, most of whom do not read English:
    time, read aloud, answered with one large button or by voice. The question that
    unblocks the most schemes is always asked first.
 4. Results come back in the same language, with what you get and where to confirm it.
+5. Each result opens a full-details page in that language: what the scheme is, who qualifies,
+   documents to keep ready, step by step how to apply, and the official government apply link
+   (checked by hand). Links like `.../urimai/#s=pm-kisan` open one scheme directly.
 
 It runs entirely in the browser: no server, no account, nothing stored. Voice is turned
 into text by the browser's own speech service. The rules engine (`docs/engine.js`) is a
@@ -138,7 +141,9 @@ data/
   schemes.yaml  10 schemes, hand-curated eligibility priors
 tests/          30 tests, including regression guards
 docs/           the web page (GitHub Pages): engine.js is a port of rules.py
-scripts/        export_web_data.py (YAML -> docs/schemes.js), check_web_parity.py
+                details.js = official links; details-<lang>.js = full-details text
+scripts/        export_web_data.py (YAML -> docs/schemes.js), check_web_parity.py,
+                check_details.js (every scheme has full details in all 8 languages)
 ```
 
 To add a scheme, edit `data/schemes.yaml` only — no code change is needed. Conditions
