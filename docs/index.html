@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="ta">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Urimai · உரிமை</title>
+<meta name="description" content="Speak in your own language and find the government welfare schemes you may qualify for. Made for elderly people. Free, no sign up.">
+<meta name="theme-color" content="#0d6e4f">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d6e4f'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='white' font-family='sans-serif'%3Eஉ%3C/text%3E%3C/svg%3E">
+<style>
+:root{--bg:#fbf8f2;--card:#fff;--ink:#17181a;--muted:#55585e;--line:#ddd6c9;--green:#0d6e4f;--green-2:#e6f2ec;--amber:#8a4b00;--amber-2:#fff3e0;--accent:#d9480f;--focus:#1f5fbf}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{font-size:20px;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);line-height:1.5;
+  font-family:system-ui,-apple-system,"Segoe UI","Noto Sans","Noto Sans Tamil","Noto Sans Devanagari","Nirmala UI","Latha",Roboto,Arial,sans-serif}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:2px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:64px}
+.brand{font-weight:800;font-size:1.2rem;color:var(--green);display:flex;align-items:center;gap:10px;white-space:nowrap}
+.brand i{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:10px;background:var(--green);color:#fff;font-style:normal}
+.hbtns{display:flex;gap:8px}
+.hb{white-space:nowrap;min-height:48px;padding:0 12px;border-radius:12px;border:2px solid var(--line);background:#fff;font:inherit;font-size:.9rem;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:6px;cursor:pointer}
+main{padding:20px 0 28px}
+h1{font-size:1.9rem;line-height:1.2;margin:.2rem 0 .6rem}
+h2{font-size:1.45rem;margin:1.4rem 0 .6rem}
+p{margin:.4rem 0 .8rem}
+.lead{font-size:1.15rem;color:var(--muted)}
+.multi{display:grid;gap:2px;margin-bottom:14px}
+.multi span{font-size:1.35rem;font-weight:800}
+.langs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lang{min-height:96px;border-radius:18px;border:3px solid var(--line);background:#fff;font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:10px;color:var(--ink)}
+.lang b{font-size:1.6rem}.lang small{color:var(--muted);font-size:.85rem}
+.lang.saved{border-color:var(--green)}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:72px;margin:12px 0;padding:14px 18px;border-radius:18px;border:3px solid var(--line);background:#fff;color:var(--ink);font:inherit;font-size:1.3rem;font-weight:800;cursor:pointer;text-align:center}
+.btn.primary{background:var(--green);border-color:var(--green);color:#fff}
+.btn.ghost{background:transparent;font-size:1.05rem;min-height:60px}
+.opt{display:flex;align-items:center;gap:14px;width:100%;min-height:76px;margin:12px 0;padding:14px 20px;border-radius:18px;border:3px solid var(--line);background:#fff;color:var(--ink);font:inherit;font-size:1.4rem;font-weight:800;text-align:left;cursor:pointer}
+.opt .dot{flex:none;width:30px;height:30px;border-radius:50%;border:3px solid var(--line)}
+.opt.sel{background:var(--green);border-color:var(--green);color:#fff}.opt.sel .dot{border-color:#fff;background:#fff}
+.opt.dk{font-size:1.15rem;color:var(--muted);min-height:64px}
+button:focus-visible,.lang:focus-visible{outline:4px solid var(--focus);outline-offset:3px}
+.q{font-size:1.75rem;font-weight:800;line-height:1.3;margin:.2rem 0 .4rem}
+.step{font-weight:800;color:var(--green);font-size:1rem;letter-spacing:.02em}
+.row{display:flex;gap:12px}.row>*{flex:1}
+.replay{min-height:56px;padding:0 16px;border-radius:14px;border:2px solid var(--line);background:#fff;font:inherit;font-size:1rem;font-weight:700;display:inline-flex;align-items:center;gap:8px;cursor:pointer;color:var(--ink)}
+.mic{display:grid;place-items:center;width:150px;height:150px;margin:18px auto 6px;border-radius:50%;border:0;background:var(--accent);color:#fff;cursor:pointer;box-shadow:0 10px 30px rgba(217,72,15,.35)}
+.mic svg{width:64px;height:64px}
+.mic.on{animation:pulse 1.2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(217,72,15,.5)}100%{box-shadow:0 0 0 28px rgba(217,72,15,0)}}
+.micl{text-align:center;font-size:1.35rem;font-weight:800;margin:4px 0 10px}
+.mic.small{width:96px;height:96px;margin:6px auto}.mic.small svg{width:42px;height:42px}
+.example{background:#fff;border-left:6px solid var(--green);border-radius:12px;padding:14px 16px;font-size:1.15rem;margin:10px 0 6px}
+.heard{background:#fff;border:2px dashed var(--line);border-radius:14px;padding:14px 16px;font-size:1.2rem;min-height:60px}
+.status{text-align:center;color:var(--muted);font-weight:700;min-height:1.6em}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.chip{display:inline-flex;align-items:center;gap:10px;padding:10px 10px 10px 16px;border-radius:999px;background:var(--green-2);border:2px solid #b9dccb;font-weight:800;font-size:1.1rem}
+.chip button{width:40px;height:40px;border-radius:50%;border:0;background:#fff;font-size:1.2rem;font-weight:800;cursor:pointer;color:var(--ink)}
+.numdisp{font-size:3rem;font-weight:800;text-align:center;background:#fff;border:3px solid var(--line);border-radius:18px;min-height:96px;display:grid;place-items:center;margin:10px 0}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pad button{min-height:72px;font:inherit;font-size:1.8rem;font-weight:800;border-radius:16px;border:3px solid var(--line);background:#fff;cursor:pointer;color:var(--ink)}
+.pad button.okk{background:var(--green);border-color:var(--green);color:#fff;font-size:1.3rem}
+.pad button:disabled{opacity:.4}
+.card{background:var(--card);border:3px solid var(--line);border-radius:20px;padding:18px;margin:14px 0}
+.card.likely{border-color:#9fd0b9}.card.possible{border-color:#f0cf9f}
+.card h3{font-size:1.35rem;margin:0 0 .5rem;line-height:1.3}
+.kv{margin:.5rem 0}.kv b{display:block;font-size:.95rem;color:var(--muted)}.kv span{font-size:1.15rem}
+.badge{display:inline-block;padding:6px 14px;border-radius:999px;font-weight:800;font-size:1rem;margin-bottom:8px}
+.badge.likely{background:var(--green-2);color:var(--green)}.badge.possible{background:var(--amber-2);color:var(--amber)}
+.dep{color:var(--amber);font-weight:700}
+details{background:#fff;border:2px solid var(--line);border-radius:16px;padding:6px 16px;margin:16px 0}
+summary{cursor:pointer;font-weight:800;font-size:1.15rem;min-height:56px;display:flex;align-items:center}
+.nf{padding:10px 0;border-top:1px solid var(--line)}.nf b{display:block}.nf span{color:var(--muted)}
+.note{font-size:.95rem;color:var(--muted)}
+.warn{background:var(--amber-2);color:var(--amber);border-radius:14px;padding:12px 16px;font-weight:700}
+footer{border-top:2px solid var(--line);padding:18px 0 40px;color:var(--muted);font-size:.9rem}
+footer p{margin:.4rem 0}
+footer a{color:var(--green);font-weight:700}
+@media(max-width:440px){#langName{display:none}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="brand"><i aria-hidden="true">உ</i><span>Urimai</span></div>
+  <div class="hbtns">
+    <button class="hb" id="voiceBtn" type="button" hidden></button>
+    <button class="hb" id="langBtn" type="button" hidden aria-label="Language"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg><span id="langName"></span></button>
+  </div>
+</div></header>
+
+<main class="wrap" id="app" aria-live="polite"></main>
+
+<footer><div class="wrap" id="foot"></div></footer>
+
+<script src="engine.js"></script>
+<script src="schemes.js"></script>
+<script src="i18n.js"></script>
+<script src="extract.js"></script>
+<script>
+(function () {
+  'use strict';
+  var E = window.UrimaiEngine, S = window.URIMAI_SCHEMES, I = window.URIMAI_I18N, X = window.UrimaiExtract;
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  var app = document.getElementById('app'), foot = document.getElementById('foot');
+  var voiceBtn = document.getElementById('voiceBtn'), langBtn = document.getElementById('langBtn');
+  var MIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v4M8 21h8"/></svg>';
+  var SPK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+
+  var st = { lang: null, profile: {}, asked: {}, hist: [], screen: 'lang', heard: '', facts: null, voice: store('urimai.voice') !== 'off', num: '' };
+  function T() { return I.LANGS[st.lang]; }
+  function U(k) { return T().ui[k]; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  /* ---------- question definitions (values match urimai/models.py) ---------- */
+  var Q = {
+    age: { type: 'number' },
+    gender: { type: 'opts', opts: [['female', 'female'], ['male', 'male'], ['other', 'other']] },
+    marital_status: { type: 'opts', opts: [['married', 'married'], ['unmarried', 'unmarried'], ['widowed', 'widowed'], ['separated', 'separated']] },
+    state: { type: 'yesno', yes: 'TN', no: 'OTHER' },
+    area_type: { type: 'opts', opts: [['village', 'rural'], ['town', 'urban']] },
+    land_acres: { type: 'opts', opts: [['land0', 0], ['landLt1', 0.5], ['land1_2', 1.5], ['land2_5', 3.5], ['land5p', 6]] },
+    disability_percent: { type: 'opts', opts: [['dis0', 0], ['dis80', 80], ['disLt80', 40]] }
+  };
+  function qdef(f) { return Q[f] || { type: 'yesno', yes: true, no: false }; }
+
+  /* ---------- speech out ---------- */
+  var voices = [];
+  function loadVoices() { try { voices = window.speechSynthesis ? speechSynthesis.getVoices() : []; } catch (e) { voices = []; } }
+  loadVoices(); if (window.speechSynthesis) speechSynthesis.onvoiceschanged = function () { loadVoices(); renderHeader(); };
+  function voiceFor(lang) {
+    var code = I.LANGS[lang].speech.toLowerCase(), base = code.split('-')[0];
+    var norm = function (v) { return (v.lang || '').replace('_', '-').toLowerCase(); };
+    return voices.filter(function (v) { return norm(v) === code; })[0] || voices.filter(function (v) { return norm(v).split('-')[0] === base; })[0] || null;
+  }
+  function canSpeak() { return !!(window.speechSynthesis && st.lang && voiceFor(st.lang)); }
+  function speak(text, force) {
+    if (!canSpeak() || (!st.voice && !force)) return;
+    try {
+      speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.voice = voiceFor(st.lang); u.lang = T().speech; u.rate = 0.88;
+      speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+  function hush() { try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) {} }
+
+  /* ---------- speech in ---------- */
+  var rec = null;
+  function listen(onLive, onDone, onFail) {
+    if (!SR) { onFail('nomic'); return; }
+    hush(); stopListening();
+    var r = new SR(), finalTxt = '', live = '';
+    r.lang = T().speech; r.interimResults = true; r.continuous = false; r.maxAlternatives = 1;
+    r.onresult = function (ev) {
+      live = ''; for (var i = ev.resultIndex; i < ev.results.length; i++) {
+        if (ev.results[i].isFinal) finalTxt += ev.results[i][0].transcript + ' '; else live += ev.results[i][0].transcript;
+      }
+      onLive((finalTxt + live).trim());
+    };
+    r.onerror = function (ev) { rec = null; onFail(ev.error || 'error'); };
+    r.onend = function () { if (rec !== r) return; rec = null; onDone((finalTxt + live).trim()); };
+    rec = r;
+    try { r.start(); } catch (e) { rec = null; onFail('error'); }
+  }
+  function stopListening() { if (rec) { var r = rec; try { r.stop(); } catch (e) {} } }
+
+  /* ---------- flow ---------- */
+  function snapshot() { return { screen: st.screen, profile: JSON.parse(JSON.stringify(st.profile)), asked: JSON.parse(JSON.stringify(st.asked)), heard: st.heard, facts: st.facts }; }
+  function go(screen, keep) { if (!keep) st.hist.push(snapshot()); st.screen = screen; st.num = ''; render(); window.scrollTo(0, 0); }
+  function back() { hush(); stopListening(); var h = st.hist.pop(); if (!h) { st.screen = 'lang'; render(); return; } st.screen = h.screen; st.profile = h.profile; st.asked = h.asked; st.heard = h.heard; st.facts = h.facts; st.num = ''; render(); window.scrollTo(0, 0); }
+  function restart() { hush(); stopListening(); st.profile = {}; st.asked = {}; st.hist = []; st.heard = ''; st.facts = null; go('tell', true); }
+  function nextField() {
+    var a = E.assess(st.profile, S);
+    for (var i = 0; i < a.needed.length; i++) if (!st.asked[a.needed[i]]) return a.needed[i];
+    return null;
+  }
+  function advance() { var f = nextField(); st.cur = f; go(f ? 'q' : 'results'); }
+  function answer(field, value) {
+    st.hist.push(snapshot());
+    st.asked[field] = true;
+    if (value === undefined) delete st.profile[field]; else st.profile[field] = value;
+    var f = nextField(); st.cur = f; st.screen = f ? 'q' : 'results'; st.num = ''; render(); window.scrollTo(0, 0);
+  }
+
+  /* ---------- text helpers ---------- */
+  function schemeText(s) {
+    var o = T().schemes && T().schemes[s.id];
+    if (o) return { name: o[0], benefit: o[1], where: o[2] };
+    if (st.lang === 'ta') return { name: s.name_ta, benefit: s.benefit_ta, where: s.verify_at_ta };
+    return { name: s.name_en, benefit: s.benefit_en, where: s.verify_at_en };
+  }
+  function factLabel(f, v) {
+    var L = T(), o = L.opt, fl = L.field;
+    switch (f) {
+      case 'age': return fl.age + ': ' + v + ' ' + L.ui.years;
+      case 'gender': return o[v] || v;
+      case 'marital_status': return o[v] || v;
+      case 'area_type': return v === 'rural' ? o.village : o.town;
+      case 'state': return v === 'TN' ? L.ui.tn : fl.state + ': ' + v;
+      case 'land_acres': return fl.land_acres + ': ' + v + ' ' + L.ui.acres;
+      case 'disability_percent': return fl.disability_percent + ': ' + v + '%';
+      default: return fl[f] + (v ? ' ✓' : ' ✗');
+    }
+  }
+  function questionSpeech(f) {
+    var d = qdef(f), L = T(), txt = L.q[f];
+    if (d.type === 'opts') txt += ' ' + d.opts.map(function (o) { return L.opt[o[0]]; }).join(', ') + '.';
+    return txt;
+  }
+
+  /* ---------- screens ---------- */
+  function render() {
+    renderHeader(); renderFooter();
+    if (st.lang) document.documentElement.lang = st.lang;
+    ({ lang: renderLang, tell: renderTell, q: renderQ, results: renderResults })[st.screen]();
+  }
+
+  function renderHeader() {
+    langBtn.hidden = !st.lang;
+    if (st.lang) document.getElementById('langName').textContent = T().name;
+    voiceBtn.hidden = !canSpeak();
+    if (canSpeak()) voiceBtn.innerHTML = SPK + '<span>' + esc(st.voice ? U('voiceOn') : U('voiceOff')) + '</span>';
+  }
+
+  function renderFooter() {
+    var L = st.lang ? T() : I.LANGS.en, ui = L.ui;
+    foot.innerHTML =
+      '<p><b>' + esc(ui.disclaimer) + '</b></p>' +
+      '<p>' + esc(ui.privacy) + '</p>' +
+      (ui.translationNote ? '<p>' + esc(ui.translationNote) + '</p>' : '') +
+      '<p>Urimai: free and open source. The same rules as the Urimai API, checked to give identical answers. ' +
+      '<a href="https://github.com/rgokulkrishna44-debug/urimai">Code on GitHub</a>. Made by R. Gokula Krishnan, built with AI.</p>';
+  }
+
+  function renderLang() {
+    var saved = store('urimai.lang');
+    var html = '<div class="multi"><span>உங்கள் மொழியைத் தேர்ந்தெடுங்கள்</span><span>अपनी भाषा चुनें</span><span>Choose your language</span></div>' +
+      '<p class="lead">Speak in your own language and find the government schemes you may get. Free. No sign up.</p><div class="langs">';
+    I.ORDER.forEach(function (k) {
+      var L = I.LANGS[k];
+      html += '<button class="lang' + (k === saved ? ' saved' : '') + '" type="button" data-lang="' + k + '" lang="' + k + '"><b>' + esc(L.name) + '</b><small>' + esc(L.english) + '</small></button>';
+    });
+    app.innerHTML = html + '</div>';
+    app.querySelectorAll('[data-lang]').forEach(function (b) {
+      b.onclick = function () { st.lang = b.getAttribute('data-lang'); store('urimai.lang', st.lang); restart(); };
+    });
+  }
+
+  function chipsHTML() {
+    var keys = Object.keys(st.facts || {});
+    if (!keys.length) return '<p class="warn">' + esc(U('nothingUnderstood')) + '</p>';
+    return '<p><b>' + esc(U('understood')) + '</b></p><div class="chips">' + keys.map(function (k) {
+      return '<span class="chip">' + esc(factLabel(k, st.facts[k])) + '<button type="button" data-rm="' + k + '" aria-label="' + esc(U('remove')) + '">✕</button></span>';
+    }).join('') + '</div>';
+  }
+
+  function renderTell() {
+    var ui = T().ui, done = st.facts !== null;
+    var html = '<h1>' + esc(ui.tellTitle) + '</h1>';
+    if (!done) {
+      html += '<p class="lead">' + esc(ui.tellHint) + '</p><div class="example">“' + esc(ui.example) + '”</div>';
+      if (SR) html += '<button class="mic" id="mic" type="button" aria-label="' + esc(ui.speak) + '">' + MIC + '</button><div class="micl" id="micl">' + esc(ui.speak) + '</div>' +
+        '<div class="status" id="status"></div><div class="heard" id="heard" hidden></div>';
+      else html += '<p class="warn">' + esc(ui.noMic) + '</p>';
+      html += '<button class="btn ghost" id="skip" type="button">' + esc(SR ? ui.skipAsk : ui.continue) + '</button>';
+    } else {
+      html += '<p><b>' + esc(ui.heard) + '</b></p><div class="heard">' + esc(st.heard) + '</div>' + chipsHTML() +
+        '<button class="btn primary" id="cont" type="button">' + esc(ui.continue) + '</button>' +
+        (SR ? '<button class="btn" id="again" type="button">' + MIC.replace('<svg', '<svg width="28" height="28"') + esc(ui.speakAgain) + '</button>' : '');
+    }
+    app.innerHTML = html;
+    var skip = document.getElementById('skip'); if (skip) skip.onclick = function () { advance(); };
+    var cont = document.getElementById('cont'); if (cont) cont.onclick = function () { advance(); };
+    var again = document.getElementById('again'); if (again) again.onclick = function () {
+      Object.keys(st.facts || {}).forEach(function (k) { delete st.profile[k]; }); st.facts = null; st.heard = ''; renderTell();
+    };
+    app.querySelectorAll('[data-rm]').forEach(function (b) {
+      b.onclick = function () { var k = b.getAttribute('data-rm'); delete st.facts[k]; delete st.profile[k]; renderTell(); };
+    });
+    var mic = document.getElementById('mic');
+    if (mic) mic.onclick = function () {
+      if (rec) { stopListening(); return; }
+      var status = document.getElementById('status'), heard = document.getElementById('heard'), micl = document.getElementById('micl');
+      mic.classList.add('on'); micl.textContent = ui.stop; status.textContent = ui.listening;
+      listen(function (live) { heard.hidden = false; heard.textContent = live; },
+        function (text) {
+          mic.classList.remove('on'); micl.textContent = ui.speak; status.textContent = '';
+          if (!text) { status.textContent = ui.notCaught; return; }
+          st.heard = text; st.facts = X.extract(text, T().lex);
+          Object.keys(st.facts).forEach(function (k) { st.profile[k] = st.facts[k]; });
+          renderTell();
+          var keys = Object.keys(st.facts);
+          speak(keys.length ? ui.understood + ' ' + keys.map(function (k) { return factLabel(k, st.facts[k]); }).join(', ') : ui.nothingUnderstood);
+        },
+        function (err) {
+          mic.classList.remove('on'); micl.textContent = ui.speak;
+          status.textContent = err === 'not-allowed' || err === 'service-not-allowed' ? ui.noMic : ui.notCaught;
+        });
+    };
+  }
+
+  function stepNo() { return Object.keys(st.asked).length + 1; }
+
+  function renderQ() {
+    var f = st.cur, d = qdef(f), L = T(), ui = L.ui;
+    var html = '<div class="step">' + esc(ui.question) + ' ' + stepNo() + '</div><p class="q" id="qt">' + esc(L.q[f]) + '</p>';
+    if (canSpeak()) html += '<button class="replay" id="replay" type="button">' + SPK + esc(ui.readAloud) + '</button>';
+    if (d.type === 'number') {
+      html += '<div class="numdisp" id="nd" aria-live="polite">' + esc(st.num || '–') + '</div>';
+      if (SR) html += '<button class="mic small" id="qmic" type="button" aria-label="' + esc(ui.speak) + '">' + MIC + '</button><div class="status" id="qs">' + esc(ui.typeAge) + '</div>';
+      html += '<div class="pad">' + [1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (n) { return '<button type="button" data-n="' + n + '">' + n + '</button>'; }).join('') +
+        '<button type="button" data-n="c" aria-label="' + esc(ui.clear) + '">⌫</button><button type="button" data-n="0">0</button>' +
+        '<button type="button" class="okk" id="okk">' + esc(ui.ok) + '</button></div>';
+      html += '<button class="opt dk" type="button" data-dk="1"><span class="dot"></span>' + esc(ui.dontKnow) + '</button>';
+    } else {
+      var opts = d.type === 'yesno' ? [[ui.yes, d.yes, 'yes'], [ui.no, d.no, 'no']] : d.opts.map(function (o) { return [L.opt[o[0]], o[1], o[0]]; });
+      if (SR) html += '<button class="mic small" id="qmic" type="button" aria-label="' + esc(ui.speak) + '">' + MIC + '</button><div class="status" id="qs"></div>';
+      opts.forEach(function (o, i) { html += '<button class="opt" type="button" data-i="' + i + '"><span class="dot"></span>' + esc(o[0]) + '</button>'; });
+      html += '<button class="opt dk" type="button" data-dk="1"><span class="dot"></span>' + esc(ui.dontKnow) + '</button>';
+    }
+    html += '<div class="row"><button class="btn ghost" id="bk" type="button">← ' + esc(ui.back) + '</button></div>';
+    app.innerHTML = html;
+
+    document.getElementById('bk').onclick = back;
+    var rp = document.getElementById('replay'); if (rp) rp.onclick = function () { speak(questionSpeech(f), true); };
+    app.querySelector('[data-dk]').onclick = function () { answer(f, undefined); };
+
+    var pick = function (btn, value) {
+      app.querySelectorAll('.opt').forEach(function (b) { b.classList.remove('sel'); });
+      if (btn) btn.classList.add('sel');
+      setTimeout(function () { answer(f, value); }, 450);
+    };
+
+    if (d.type === 'number') {
+      var nd = document.getElementById('nd'), ok = document.getElementById('okk');
+      var valid = function () { var n = +st.num; return st.num !== '' && n >= 1 && n <= 120; };
+      var upd = function () { nd.textContent = st.num || '–'; ok.disabled = !valid(); };
+      upd();
+      app.querySelectorAll('[data-n]').forEach(function (b) {
+        b.onclick = function () { var n = b.getAttribute('data-n'); st.num = n === 'c' ? st.num.slice(0, -1) : (st.num.length < 3 ? (st.num + n).replace(/^0+/, '') : st.num); upd(); };
+      });
+      ok.onclick = function () { if (valid()) answer(f, +st.num); };
+    } else {
+      app.querySelectorAll('[data-i]').forEach(function (b) { b.onclick = function () { pick(b, opts[+b.getAttribute('data-i')][1]); }; });
+    }
+
+    var qmic = document.getElementById('qmic');
+    if (qmic) qmic.onclick = function () {
+      if (rec) { stopListening(); return; }
+      var qs = document.getElementById('qs'); qmic.classList.add('on'); qs.textContent = ui.listening;
+      listen(function (live) { qs.textContent = live; }, function (text) {
+        qmic.classList.remove('on');
+        var r = interpret(f, text);
+        if (r === null) { qs.textContent = (text ? '“' + text + '” · ' : '') + ui.notCaught; return; }
+        if (r === 'dk') { answer(f, undefined); return; }
+        if (d.type === 'number') { st.num = String(Math.round(r)); qs.textContent = ui.didYouSay + ' ' + st.num + ' ?'; document.getElementById('nd').textContent = st.num; document.getElementById('okk').disabled = !(+st.num >= 1 && +st.num <= 120); return; }
+        var idx = -1; opts.forEach(function (o, i) { if (o[1] === r) idx = i; });
+        pick(idx >= 0 ? app.querySelector('[data-i="' + idx + '"]') : null, r);
+      }, function () { qmic.classList.remove('on'); qs.textContent = ui.notCaught; });
+    };
+
+    speak(questionSpeech(f));
+  }
+
+  // Spoken answer -> value for this field, 'dk', or null (ask the person to tap).
+  function interpret(f, text) {
+    var lex = T().lex, t = (text || '').trim();
+    if (!t) return null;
+    var yn = X.yesNo(t, lex), d = qdef(f);
+    if (yn === 'dk') return 'dk';
+    if (d.type === 'number') { var n = X.firstNumber(t); return n !== null && n >= 1 && n <= 120 ? n : null; }
+    if (f === 'gender') { var fe = X.has(t, lex.female.concat(lex.widowF)), ma = X.has(t, lex.male.concat(lex.widowM)); return fe && !ma ? 'female' : ma && !fe ? 'male' : null; }
+    if (f === 'marital_status') {
+      if (X.has(t, lex.widowF.concat(lex.widowM))) return 'widowed';
+      if (X.has(t, lex.unmarried)) return 'unmarried';
+      if (X.has(t, lex.married)) return 'married';
+      return null;
+    }
+    if (f === 'area_type') { var v = X.has(t, lex.village), w = X.has(t, lex.town); return v && !w ? 'rural' : w && !v ? 'urban' : null; }
+    if (f === 'state') { if (X.has(t, lex.tn)) return 'TN'; return yn === 'yes' ? 'TN' : yn === 'no' ? 'OTHER' : null; }
+    if (f === 'land_acres') {
+      if (yn === 'no') return 0;
+      var a = X.firstNumber(t); if (a === null) return null;
+      return a <= 0 ? 0 : a < 1 ? 0.5 : a <= 2 ? 1.5 : a <= 5 ? 3.5 : 6;
+    }
+    if (f === 'disability_percent') {
+      if (yn === 'no') return 0;
+      var p = X.firstNumber(t); if (p === null) return null;
+      return p >= 80 ? 80 : 40;
+    }
+    return yn === 'yes' ? true : yn === 'no' ? false : null;
+  }
+
+  function renderResults() {
+    var L = T(), ui = L.ui, a = E.assess(st.profile, S);
+    var byId = {}; S.forEach(function (s) { byId[s.id] = s; });
+    var likely = a.results.filter(function (r) { return r.verdict === 'likely_eligible'; });
+    var possible = a.results.filter(function (r) { return r.verdict === 'possibly_eligible'; });
+    var nofit = a.results.filter(function (r) { return r.verdict === 'unlikely' || r.verdict === 'excluded'; });
+
+    var card = function (r, kind) {
+      var t = schemeText(byId[r.id]);
+      return '<div class="card ' + kind + '"><span class="badge ' + kind + '">' + esc(kind === 'likely' ? ui.likely : ui.possible) + '</span>' +
+        '<h3>' + esc(t.name) + '</h3>' +
+        '<div class="kv"><b>' + esc(ui.benefit) + '</b><span>' + esc(t.benefit) + '</span></div>' +
+        '<div class="kv"><b>' + esc(ui.where) + '</b><span>' + esc(t.where) + '</span></div>' +
+        (r.missing.length ? '<p class="dep">' + esc(ui.dependsOn) + ' ' + esc(r.missing.map(function (m) { return L.field[m]; }).join(', ')) + '</p>' : '') +
+        (canSpeak() ? '<button class="replay" type="button" data-say="' + r.id + '">' + SPK + esc(ui.readAloud) + '</button>' : '') +
+        '</div>';
+    };
+
+    var html = '<h1>' + esc(ui.resultsTitle) + '</h1>';
+    if (!likely.length && !possible.length) html += '<p class="warn">' + esc(ui.noneLikely) + '</p>';
+    html += likely.map(function (r) { return card(r, 'likely'); }).join('') + possible.map(function (r) { return card(r, 'possible'); }).join('');
+    if (nofit.length) {
+      html += '<details><summary>' + esc(ui.notFit) + ' (' + nofit.length + ')</summary>' + nofit.map(function (r) {
+        var why = r.verdict === 'excluded' ? ui.taxExcluded : ui.notMatch + ' ' + r.failed.map(function (m) { return L.field[m]; }).join(', ');
+        return '<div class="nf"><b>' + esc(schemeText(byId[r.id]).name) + '</b><span>' + esc(why) + '</span></div>';
+      }).join('') + '</details>';
+    }
+    var shareList = likely.concat(possible).map(function (r) { var t = schemeText(byId[r.id]); return '• ' + t.name + ': ' + t.benefit + ' (' + t.where + ')'; });
+    if (shareList.length) {
+      var msg = ui.youMayGet + '\n' + shareList.join('\n') + '\n\n' + ui.disclaimer + '\n' + location.href.split('#')[0];
+      html += '<a class="btn primary" href="https://wa.me/?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener">' + esc(ui.share) + '</a>';
+    }
+    html += '<button class="btn" id="bk" type="button">← ' + esc(ui.back) + '</button><button class="btn ghost" id="rs" type="button">' + esc(ui.restart) + '</button>';
+    app.innerHTML = html;
+    document.getElementById('bk').onclick = back;
+    document.getElementById('rs').onclick = restart;
+    app.querySelectorAll('[data-say]').forEach(function (b) {
+      b.onclick = function () { var t = schemeText(byId[b.getAttribute('data-say')]); speak(t.name + '. ' + ui.benefit + ': ' + t.benefit + '. ' + ui.where + ': ' + t.where, true); };
+    });
+    var summary = likely.concat(possible).map(function (r) { return schemeText(byId[r.id]).name; });
+    speak(summary.length ? ui.youMayGet + ' ' + summary.join(', ') : ui.noneLikely);
+  }
+
+  voiceBtn.onclick = function () { st.voice = !st.voice; store('urimai.voice', st.voice ? 'on' : 'off'); if (!st.voice) hush(); renderHeader(); };
+  langBtn.onclick = function () { hush(); stopListening(); st.screen = 'lang'; st.hist = []; render(); };
+  render();
+})();
+</script>
+</body>
+</html>
