@@ -13,6 +13,25 @@ and the exact office where they can confirm it.
 
 ---
 
+## Try it: [rgokulkrishna44-debug.github.io/urimai](https://rgokulkrishna44-debug.github.io/urimai/)
+
+A web page built for elderly users, most of whom do not read English:
+
+1. Pick a language: Tamil, Hindi, English, Telugu, Kannada, Malayalam, Bengali or Marathi.
+2. Speak freely about yourself, in that language, or skip straight to questions.
+3. Only the facts the page is sure of are kept. Everything else is asked one question at a
+   time, read aloud, answered with one large button or by voice. The question that
+   unblocks the most schemes is always asked first.
+4. Results come back in the same language, with what you get and where to confirm it.
+
+It runs entirely in the browser: no server, no account, nothing stored. Voice is turned
+into text by the browser's own speech service. The rules engine (`docs/engine.js`) is a
+port of `urimai/rules.py`, and `scripts/check_web_parity.py` runs both engines on 2,000
+random profiles and fails on any difference in verdict or question order (0 today).
+Translations other than English and Tamil were made with AI help and are marked as such.
+
+---
+
 ## What it does not do
 
 This is a **screening aid, not a decision**. It cannot grant or deny anything, and it is
@@ -63,7 +82,7 @@ fact becomes a question, while a wrong fact silently denies someone a benefit.
 ```bash
 pip install -r requirements.txt
 uvicorn urimai.api:app --reload      # http://127.0.0.1:8000/docs
-pytest -q                            # 16 tests
+pytest -q                            # 30 tests
 ```
 
 No API key is required. Without one, extraction falls back to a conservative regex parser
@@ -117,7 +136,9 @@ urimai/
   api.py        FastAPI surface
 data/
   schemes.yaml  10 schemes, hand-curated eligibility priors
-tests/          16 tests, including two regression guards
+tests/          30 tests, including regression guards
+docs/           the web page (GitHub Pages): engine.js is a port of rules.py
+scripts/        export_web_data.py (YAML -> docs/schemes.js), check_web_parity.py
 ```
 
 To add a scheme, edit `data/schemes.yaml` only — no code change is needed. Conditions
@@ -161,9 +182,9 @@ completely while the feature was broken for its entire intended audience.
   found three real bugs that every English test had passed straight through:
   - Spoken numbers were dropped. The age pattern required digits, but speech yields
     `அறுபத்தி ஐந்து`, never `65`. This is the same English-shaped assumption as the
-    original ``-after-`வயது` fault, one layer up. `urimai/numerals.py` now parses
+    original `\b`-after-`வயது` fault, one layer up. `urimai/numerals.py` now parses
     Tamil cardinals, including sandhi-fused forms like `இருபத்தியிரண்டு` (22).
-  - The state was never extracted from Tamil at all. The pattern ended in ``, and
+  - The state was never extracted from Tamil at all. The pattern ended in `\b`, and
     `தமிழ்நாடு` ends in the combining mark `ு` - so the *original bug was still live in a
     second place*, untouched by the fix that made it famous. It now matches the stem, so
     inflected speech (`தமிழ்நாட்டில்`) is recognised too.
