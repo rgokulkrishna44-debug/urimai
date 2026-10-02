@@ -77,6 +77,16 @@ footer{border-top:2px solid var(--line);padding:18px 0 40px;color:var(--muted);f
 footer p{margin:.4rem 0}
 footer a{color:var(--green);font-weight:700}
 @media(max-width:440px){#langName{display:none}}
+.more{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:60px;margin:12px 0 4px;padding:10px 14px;border-radius:14px;border:2px solid var(--green);background:var(--green-2);color:var(--green);font:inherit;font-size:1.1rem;font-weight:800;cursor:pointer;text-align:center}
+.nf .more{min-height:48px;font-size:1rem;margin:8px 0 0}
+a.btn{text-decoration:none}
+.apply{margin:14px 0 6px}.apply .btn{margin:0}.apply small{display:block;text-align:center;color:var(--muted);font-size:.9rem;margin-top:6px;word-break:break-all}
+.sec{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px 18px;margin:14px 0}
+.sec h2{font-size:1.2rem;margin:0 0 .5rem;color:var(--green)}
+.sec p{font-size:1.15rem;margin:.2rem 0}
+.sec ul,.sec ol{margin:.2rem 0;padding-left:1.4rem;font-size:1.1rem}.sec li{margin:.45rem 0}
+.links a{display:block;padding:12px 0;border-top:1px solid var(--line);color:var(--green);font-weight:800;word-break:break-word}.links a:first-of-type{border-top:0}
+.links a span{display:block;color:var(--muted);font-weight:400;font-size:.9rem}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 </style>
 </head>
@@ -97,10 +107,19 @@ footer a{color:var(--green);font-weight:700}
 <script src="schemes.js"></script>
 <script src="i18n.js"></script>
 <script src="extract.js"></script>
+<script src="details.js"></script>
+<script src="details-en.js"></script>
+<script src="details-ta.js"></script>
+<script src="details-hi.js"></script>
+<script src="details-te.js"></script>
+<script src="details-kn.js"></script>
+<script src="details-ml.js"></script>
+<script src="details-bn.js"></script>
+<script src="details-mr.js"></script>
 <script>
 (function () {
   'use strict';
-  var E = window.UrimaiEngine, S = window.URIMAI_SCHEMES, I = window.URIMAI_I18N, X = window.UrimaiExtract;
+  var E = window.UrimaiEngine, S = window.URIMAI_SCHEMES, I = window.URIMAI_I18N, X = window.UrimaiExtract, DD = window.URIMAI_DETAILS;
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
   var app = document.getElementById('app'), foot = document.getElementById('foot');
   var voiceBtn = document.getElementById('voiceBtn'), langBtn = document.getElementById('langBtn');
@@ -112,6 +131,9 @@ footer a{color:var(--green);font-weight:700}
   var st = { lang: null, profile: {}, asked: {}, hist: [], screen: 'lang', heard: '', facts: null, voice: store('urimai.voice') !== 'off', num: '' };
   function T() { return I.LANGS[st.lang]; }
   function U(k) { return T().ui[k]; }
+  function DT() { return DD.text[st.lang] || DD.text.en; }
+  function DS(id) { return DT().s[id] || DD.text.en.s[id]; }
+  function schemeLink(id) { return location.href.split('#')[0] + '#s=' + id; }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
   /* ---------- question definitions (values match urimai/models.py) ---------- */
@@ -170,7 +192,8 @@ footer a{color:var(--green);font-weight:700}
   /* ---------- flow ---------- */
   function snapshot() { return { screen: st.screen, profile: JSON.parse(JSON.stringify(st.profile)), asked: JSON.parse(JSON.stringify(st.asked)), heard: st.heard, facts: st.facts }; }
   function go(screen, keep) { if (!keep) st.hist.push(snapshot()); st.screen = screen; st.num = ''; render(); window.scrollTo(0, 0); }
-  function back() { hush(); stopListening(); var h = st.hist.pop(); if (!h) { st.screen = 'lang'; render(); return; } st.screen = h.screen; st.profile = h.profile; st.asked = h.asked; st.heard = h.heard; st.facts = h.facts; st.num = ''; render(); window.scrollTo(0, 0); }
+  function back() { hush(); stopListening(); var h = st.hist.pop(); if (!h) { if (st.screen === 'detail' && st.lang) { clearHash(); restart(); return; } st.screen = 'lang'; render(); return; } st.screen = h.screen; st.profile = h.profile; st.asked = h.asked; st.heard = h.heard; st.facts = h.facts; st.num = ''; render(); window.scrollTo(0, 0); }
+  function clearHash() { if (location.hash) try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} }
   function restart() { hush(); stopListening(); st.profile = {}; st.asked = {}; st.hist = []; st.heard = ''; st.facts = null; go('tell', true); }
   function nextField() {
     var a = E.assess(st.profile, S);
@@ -215,7 +238,7 @@ footer a{color:var(--green);font-weight:700}
   function render() {
     renderHeader(); renderFooter();
     if (st.lang) document.documentElement.lang = st.lang;
-    ({ lang: renderLang, tell: renderTell, q: renderQ, results: renderResults })[st.screen]();
+    ({ lang: renderLang, tell: renderTell, q: renderQ, results: renderResults, detail: renderDetail })[st.screen]();
   }
 
   function renderHeader() {
@@ -245,7 +268,11 @@ footer a{color:var(--green);font-weight:700}
     });
     app.innerHTML = html + '</div>';
     app.querySelectorAll('[data-lang]').forEach(function (b) {
-      b.onclick = function () { st.lang = b.getAttribute('data-lang'); store('urimai.lang', st.lang); restart(); };
+      b.onclick = function () {
+        st.lang = b.getAttribute('data-lang'); store('urimai.lang', st.lang);
+        if (st.pendingDetail) { st.pendingDetail = false; st.hist = []; st.screen = 'detail'; render(); window.scrollTo(0, 0); return; }
+        restart();
+      };
     });
   }
 
@@ -409,6 +436,7 @@ footer a{color:var(--green);font-weight:700}
         '<div class="kv"><b>' + esc(ui.where) + '</b><span>' + esc(t.where) + '</span></div>' +
         (r.missing.length ? '<p class="dep">' + esc(ui.dependsOn) + ' ' + esc(r.missing.map(function (m) { return L.field[m]; }).join(', ')) + '</p>' : '') +
         (canSpeak() ? '<button class="replay" type="button" data-say="' + r.id + '">' + SPK + esc(ui.readAloud) + '</button>' : '') +
+        '<button class="more" type="button" data-more="' + r.id + '">' + esc(DT().ui.fullDetails) + ' →</button>' +
         '</div>';
     };
 
@@ -418,10 +446,11 @@ footer a{color:var(--green);font-weight:700}
     if (nofit.length) {
       html += '<details><summary>' + esc(ui.notFit) + ' (' + nofit.length + ')</summary>' + nofit.map(function (r) {
         var why = r.verdict === 'excluded' ? ui.taxExcluded : ui.notMatch + ' ' + r.failed.map(function (m) { return L.field[m]; }).join(', ');
-        return '<div class="nf"><b>' + esc(schemeText(byId[r.id]).name) + '</b><span>' + esc(why) + '</span></div>';
+        return '<div class="nf"><b>' + esc(schemeText(byId[r.id]).name) + '</b><span>' + esc(why) + '</span>' +
+          '<button class="more" type="button" data-more="' + r.id + '">' + esc(DT().ui.fullDetails) + ' →</button></div>';
       }).join('') + '</details>';
     }
-    var shareList = likely.concat(possible).map(function (r) { var t = schemeText(byId[r.id]); return '• ' + t.name + ': ' + t.benefit + ' (' + t.where + ')'; });
+    var shareList = likely.concat(possible).map(function (r) { var t = schemeText(byId[r.id]); return '• ' + t.name + ': ' + t.benefit + ' (' + t.where + ')\n  ' + schemeLink(r.id); });
     if (shareList.length) {
       var msg = ui.youMayGet + '\n' + shareList.join('\n') + '\n\n' + ui.disclaimer + '\n' + location.href.split('#')[0];
       html += '<a class="btn primary" href="https://wa.me/?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener">' + esc(ui.share) + '</a>';
@@ -433,12 +462,60 @@ footer a{color:var(--green);font-weight:700}
     app.querySelectorAll('[data-say]').forEach(function (b) {
       b.onclick = function () { var t = schemeText(byId[b.getAttribute('data-say')]); speak(t.name + '. ' + ui.benefit + ': ' + t.benefit + '. ' + ui.where + ': ' + t.where, true); };
     });
+    app.querySelectorAll('[data-more]').forEach(function (b) {
+      b.onclick = function () { hush(); st.detail = b.getAttribute('data-more'); go('detail'); };
+    });
     var summary = likely.concat(possible).map(function (r) { return schemeText(byId[r.id]).name; });
     speak(summary.length ? ui.youMayGet + ' ' + summary.join(', ') : ui.noneLikely);
   }
 
+  function renderDetail() {
+    var id = st.detail, s = null; S.forEach(function (x) { if (x.id === id) s = x; });
+    if (!s || !DS(id)) { st.screen = 'tell'; render(); return; }
+    var d = DT(), du = d.ui, x = DS(id), ln = DD.LINKS[id] || {}, t = schemeText(s);
+    var host = function (u) { return u.replace(/^https?:\/\//, '').replace(/\/$/, ''); };
+    var list = function (arr, tag) { return '<' + tag + '>' + arr.map(function (v) { return '<li>' + esc(v) + '</li>'; }).join('') + '</' + tag + '>'; };
+    var sec = function (h, body) { return '<section class="sec"><h2>' + esc(h) + '</h2>' + body + '</section>'; };
+    var applyBox = ln.apply
+      ? '<div class="apply"><a class="btn primary" href="' + esc(ln.apply) + '" target="_blank" rel="noopener">' + esc(du.apply) + ' ↗</a><small>' + esc(du.applyHint) + ': ' + esc(host(ln.apply)) + '</small></div>'
+      : '<p class="warn">' + esc(du.noForm) + '</p>';
+    var docs = (DD.DOCS[id] || []).map(function (k) { return d.docs[k] || DD.text.en.docs[k]; });
+    var links = [];
+    if (ln.apply) links.push([du.apply, ln.apply]);
+    if (ln.site && ln.site !== ln.apply) links.push([du.site, ln.site]);
+    if (ln.extra) links.push([du.extra, ln.extra]);
+    if (ln.guide) links.push([du.guide, ln.guide]);
+    var html = '<h1>' + esc(t.name) + '</h1>' + applyBox +
+      (canSpeak() ? '<button class="replay" type="button" id="sayAll">' + SPK + esc(du.readAll) + '</button>' : '') +
+      sec(du.about, '<p>' + esc(x.about) + '</p>') +
+      sec(du.get, '<p>' + esc(x.get) + '</p>') +
+      sec(du.who, list(x.who, 'ul')) +
+      sec(du.docs, list(docs, 'ul')) +
+      sec(du.steps, list(x.steps, 'ol') + (x.note ? '<p class="note">' + esc(x.note) + '</p>' : '')) +
+      sec(du.where, '<p>' + esc(t.where) + '</p>') +
+      (links.length ? sec(du.links, '<div class="links">' + links.map(function (l) {
+        return '<a href="' + esc(l[1]) + '" target="_blank" rel="noopener">' + esc(l[0]) + ' ↗<span>' + esc(host(l[1])) + '</span></a>';
+      }).join('') + '</div>') : '') +
+      (ln.apply ? applyBox : '') +
+      '<p class="note">' + esc(du.checked) + '</p>' +
+      (st.hist.length ? '<button class="btn" id="bk" type="button">← ' + esc(U('back')) + '</button>'
+                      : '<button class="btn" id="bk" type="button">' + esc(du.allSchemes) + ' →</button>');
+    app.innerHTML = html;
+    document.getElementById('bk').onclick = back;
+    var sa = document.getElementById('sayAll');
+    if (sa) sa.onclick = function () { speak([t.name, du.about + ': ' + x.about, du.get + ': ' + x.get, du.steps + ': ' + x.steps.join(' ')].join('. '), true); };
+  }
+
   voiceBtn.onclick = function () { st.voice = !st.voice; store('urimai.voice', st.voice ? 'on' : 'off'); if (!st.voice) hush(); renderHeader(); };
-  langBtn.onclick = function () { hush(); stopListening(); st.screen = 'lang'; st.hist = []; render(); };
+  langBtn.onclick = function () { hush(); stopListening(); st.pendingDetail = st.screen === 'detail'; st.screen = 'lang'; st.hist = []; render(); };
+
+  /* A shared link like index.html#s=pm-kisan opens that scheme's details directly. */
+  var deep = /^#s=([a-z0-9-]+)$/.exec(location.hash || '');
+  if (deep && DD.LINKS[deep[1]]) {
+    st.detail = deep[1];
+    var saved = store('urimai.lang');
+    if (saved && I.LANGS[saved]) { st.lang = saved; st.screen = 'detail'; } else st.pendingDetail = true;
+  }
   render();
 })();
 </script>
